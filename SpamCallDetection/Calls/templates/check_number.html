@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Check Number</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #check-form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            border: 4px solid transparent;
+            border-image: linear-gradient(45deg, #FF6F61, #6B5B95);
+            border-image-slice: 1;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        input[type="text"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <form id="check-form">
+        <h1>Check if a Number is Spam</h1>
+        <label for="number">Phone Number:</label>
+        <input type="text" id="number" name="number">
+        <button type="submit">Check</button>
+        <div id="result"></div>
+    </form>
+    <script>
+        document.getElementById('check-form').onsubmit = async function (event) {
+            event.preventDefault();
+            const number = document.getElementById('number').value;
+            const response = await fetch(`/api/check-number/${number}/`);
+            const data = await response.json();
+            let resultDiv = document.getElementById('result');
+            console.log(data); // Log the entire data object
+
+            if (data.detail) {
+                resultDiv.innerText = 'Number not found';
+            } else {
+                console.log('Image URL:', data.image); // Log the image URL
+                resultDiv.innerHTML = `
+                    <strong style="color: blue;">Number:</strong> ${data.number}, 
+                    <strong style="color: red;">Is Spam:</strong> ${data.is_spam}, <br>
+                    <strong style="color: green;">Owner Name:</strong> ${data.owner_name},
+                    <br>
+                    <strong style="color: purple;">Image:</strong> 
+                    <img src="${data.image}" alt="Phone Number Image" style="max-width: 200px; height: auto;">
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
